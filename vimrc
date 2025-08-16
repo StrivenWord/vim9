@@ -74,10 +74,10 @@ source ~/.vim/config/netrw-ext.vim
 # === mappings ===
 
 nnoremap <C-p> :<C-u>FZF<CR>
-nnoremap <Bslash> :<C-u>Lex<CR>
-inoremap <C-Bslash> <Esc>:<C-u>Lex<CR>
-vnoremap <C-Bslash> :<C-u>Lex<CR>
-tnoremap <C-Bslash> :<C-u>Lex<Cr>
+nnoremap <Bslash> :<C-u>NetrwToggle<CR>
+inoremap <C-Bslash> <Esc>:<C-u>NetrwToggle<CR>
+vnoremap <C-Bslash> :<C-u>NetrwToggle<CR>
+tnoremap <C-Bslash> :<C-u>NetrwToggle<Cr>
 
 # ... mapleader
 var mapleader = " "
