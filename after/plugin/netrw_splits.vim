@@ -7,14 +7,14 @@ augroup NetrwSplitsTracking
     # When a netrw buffer is displayed in a window
     autocmd BufWinEnter * {
         if &filetype == 'netrw'
-            netrw_splits#AddNetrwSplit()
+            netrw_init#AddNetrwSplit()
         endif
     }
     
     # When a netrw buffer is removed from a window
     autocmd BufWinLeave * {
         if &filetype == 'netrw'
-            netrw_splits#SubtrNetrwSplit()
+            netrw_init#SubtrNetrwSplit()
         endif
     }
 augroup END

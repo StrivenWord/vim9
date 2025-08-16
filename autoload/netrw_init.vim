@@ -5,6 +5,11 @@ vim9script
 # splits.
 g:netrw_splits_count = 0
 
+# Toggle variables to track the open/close state of the two fundamental
+# windows -- the netrw file tree and the open files(s)
+g:state_netrw_filetree = -1
+g:state_netrw_content  = -1
+
 export def AddNetrwSplit()
     g:netrw_splits_count += 1
 enddef
