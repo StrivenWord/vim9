@@ -18,3 +18,21 @@ augroup NetrwSplitsTracking
         endif
     }
 augroup END
+
+# Toggle netrw file tree. Most important feature.
+def ToggleNetrw()
+    if netrw_init#NetrwIsOpen()
+        # If open, close
+        var netrw_win = netrw_init#FindNetrwWindow()
+        if netrw_win != -1
+            execute netrw_win . 'wincmd w'
+            close
+        endif
+    else
+        # Open netrw in left split. Probably depends on netrw_winsize
+        # being defined in config/netrw-ext.vim
+        aboveleft Lexplore
+    endif
+enddef
+
+command! NetrwToggle call ToggleNetrw()
