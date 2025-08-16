@@ -25,7 +25,7 @@ def ToggleNetrw()
         # If open, close
         var netrw_win = netrw_init#FindNetrwWindow()
         if netrw_win != -1
-            execute netrw_win .. 'wincmd w'
+            execute ':' .. netrw_win .. 'wincmd w'
             close
         endif
     else
