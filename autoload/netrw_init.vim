@@ -21,4 +21,26 @@ export def SubtrNetrwSplit()
     endif
 enddef
 
+# Check if netrw is currently open in any window
+export def NetrwIsOpen(): bool
+    var winnr = 1
+    while winnr <= winnr('$')
+        if getbufvar(winbufnr(winnr), '&filetype') == 'netrw'
+            return true
+        endif
+        winnr += 1
+    endwhile
+    return false
+enddef
 
+# Find the window number containing netrw
+export def FindNetrwWindow(): number
+    var winnr = 1
+    while winnr <= winnr('$')
+        if getbufvar(winbufnr(winnr), '&filetype') == 'netrw'
+            return winnr
+        endif
+        winnr += 1
+    endwhile
+    return -1
+enddef
