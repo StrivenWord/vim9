@@ -11,27 +11,7 @@ b:netrw_enhanced_mappings_set = 1
 
 echo "Setting up netrw enhanced mappings via Vim9 ftplugin..."
 
-# Helper function to get the file under cursor in netrw (Vim9 style)
-def GetNetrwFile(): string
-  var filename = expand('<cfile>')
-  if filename == ''
-    filename = getline('.')
-    # Clean up netrw line formatting (remove size, date info, etc.)
-    filename = substitute(filename, '^\s*', '', '')  # Remove leading whitespace
-    filename = substitute(filename, '\s*\d\+\s*\d\d\d\d-\d\d-\d\d.*$', '', '')  # Remove size and date
-    filename = substitute(filename, '\s*$', '', '')  # Remove trailing whitespace
-  endif
-  
-  var current_dir = exists('b:netrw_curdir') ? b:netrw_curdir : getcwd()
-  var filepath = current_dir .. '/' .. filename
-  
-  return filepath
-enddef
-
 # Legacy function wrappers for mappings (these can be called via <SID>)
-function! s:NetrwOpenExclusive()
-  call NetrwOpenExclusiveImpl()
-endfunction
 
 function! s:NetrwOpenVerticalSplit()
   call NetrwOpenVerticalSplitImpl()
@@ -50,184 +30,150 @@ function! s:NetrwOpenTab()
 endfunction
 
 # Vim9 implementation functions
-def NetrwOpenExclusiveImpl()
-  var filepath = GetNetrwFile()
-  var filename = fnamemodify(filepath, ':t')
-  
-  if filename == '' || filename == '.' || filename == '..'
-    echo "No valid file selected"
-    return
-  endif
-  
-  if isdirectory(filepath)
-    # For directories, navigate to them
-    execute 'Explore ' .. fnameescape(filepath)
-    return
-  endif
 
-  # Check if file exists and is readable
-  if !filereadable(filepath)
-    echo "File not readable: " .. filepath
-    return
-  endif
-  
-  # Close all other windows and buffers, then open the file
-  only
-  execute 'edit ' .. fnameescape(filepath)
-  
-  echo "Opened " .. filename .. " exclusively"
-enddef
+#def NetrwOpenVerticalSplitImpl()
+#  var filepath = GetNetrwFile()
+#  var filename = fnamemodify(filepath, ':t')
+#  
+#  if filename == '' || filename == '.' || filename == '..'
+#    echo "No valid file selected"
+#    return
+#  endif
+#  
+#  if isdirectory(filepath)
+#    # For directories, use normal netrw navigation
+#    normal! 
+#    return
+#  endif
+#
+#  if !filereadable(filepath)
+#    echo "File not readable: " .. filepath
+#    return
+#  endif
+#  
+#  # Save current netrw window
+#  var netrw_win = winnr()
+#  var total_windows = winnr('$')
+#  
+#  if total_windows == 1
+#    # Only netrw window - create new vertical split to the right
+#    rightbelow vsplit
+#    execute 'edit ' .. fnameescape(filepath)
+#  else
+#    # Multiple windows - try to use right window or create new split
+#    wincmd l  # Move to window on the right
+#    if winnr() != netrw_win
+#      # Successfully moved to right window, replace its content
+#      execute 'edit ' .. fnameescape(filepath)
+#    else
+#      # Couldn't move right, create new split
+#      rightbelow vsplit
+#      execute 'edit ' .. fnameescape(filepath)
+#    endif
+#  endif
+#  
+#  # Return focus to netrw
+#  execute netrw_win .. 'wincmd w'
+#  echo "Opened " .. filename .. " in vertical split"
+#enddef
 
-def NetrwOpenVerticalSplitImpl()
-  var filepath = GetNetrwFile()
-  var filename = fnamemodify(filepath, ':t')
-  
-  if filename == '' || filename == '.' || filename == '..'
-    echo "No valid file selected"
-    return
-  endif
-  
-  if isdirectory(filepath)
-    # For directories, use normal netrw navigation
-    normal! 
-    return
-  endif
+#def NetrwOpenHorizontalSplitImpl()
+#  var filepath = GetNetrwFile()
+#  var filename = fnamemodify(filepath, ':t')
+#  
+#  if filename == '' || filename == '.' || filename == '..'
+#    echo "No valid file selected"
+#    return
+#  endif
+#  
+#  if isdirectory(filepath)
+#    # For directories, use normal netrw navigation
+#    normal! 
+#    return
+#  endif
+#
+#  if !filereadable(filepath)
+#    echo "File not readable: " .. filepath
+#    return
+#  endif
+#  
+#  # Save current netrw window
+#  var netrw_win = winnr()
+#  var total_windows = winnr('$')
+#  
+#  if total_windows == 1
+#    # Only netrw window - create horizontal split below
+#    below split
+#    execute 'edit ' .. fnameescape(filepath)
+#  else
+#    # Multiple windows - try to find a good place for horizontal split
+#    # First try to move down to see if there's a window below
+#    wincmd j
+#    if winnr() != netrw_win
+#      # Successfully moved to lower window, replace its content
+#      execute 'edit ' .. fnameescape(filepath)
+#    else
+#      # Couldn't move down, create split below netrw
+#      below split
+#      execute 'edit ' .. fnameescape(filepath)
+#    endif
+#  endif
+#  
+#  # Return focus to netrw
+#  execute netrw_win .. 'wincmd w'
+#  echo "Opened " .. filename .. " in horizontal split"
+#enddef
 
-  if !filereadable(filepath)
-    echo "File not readable: " .. filepath
-    return
-  endif
-  
-  # Save current netrw window
-  var netrw_win = winnr()
-  var total_windows = winnr('$')
-  
-  if total_windows == 1
-    # Only netrw window - create new vertical split to the right
-    rightbelow vsplit
-    execute 'edit ' .. fnameescape(filepath)
-  else
-    # Multiple windows - try to use right window or create new split
-    wincmd l  # Move to window on the right
-    if winnr() != netrw_win
-      # Successfully moved to right window, replace its content
-      execute 'edit ' .. fnameescape(filepath)
-    else
-      # Couldn't move right, create new split
-      rightbelow vsplit
-      execute 'edit ' .. fnameescape(filepath)
-    endif
-  endif
-  
-  # Return focus to netrw
-  execute netrw_win .. 'wincmd w'
-  echo "Opened " .. filename .. " in vertical split"
-enddef
+#def NetrwOpenTerminalImpl()
+#  # Save current netrw window
+#  var netrw_win = winnr()
+#  
+#  # Create horizontal split below current window
+#  below split
+#  
+#  # Open terminal in the new split
+#  terminal
+#  
+#  # Return focus to netrw
+#  execute netrw_win .. 'wincmd w'
+#  echo "Terminal opened below netrw"
+#enddef
 
-def NetrwOpenHorizontalSplitImpl()
-  var filepath = GetNetrwFile()
-  var filename = fnamemodify(filepath, ':t')
-  
-  if filename == '' || filename == '.' || filename == '..'
-    echo "No valid file selected"
-    return
-  endif
-  
-  if isdirectory(filepath)
-    # For directories, use normal netrw navigation
-    normal! 
-    return
-  endif
-
-  if !filereadable(filepath)
-    echo "File not readable: " .. filepath
-    return
-  endif
-  
-  # Save current netrw window
-  var netrw_win = winnr()
-  var total_windows = winnr('$')
-  
-  if total_windows == 1
-    # Only netrw window - create horizontal split below
-    below split
-    execute 'edit ' .. fnameescape(filepath)
-  else
-    # Multiple windows - try to find a good place for horizontal split
-    # First try to move down to see if there's a window below
-    wincmd j
-    if winnr() != netrw_win
-      # Successfully moved to lower window, replace its content
-      execute 'edit ' .. fnameescape(filepath)
-    else
-      # Couldn't move down, create split below netrw
-      below split
-      execute 'edit ' .. fnameescape(filepath)
-    endif
-  endif
-  
-  # Return focus to netrw
-  execute netrw_win .. 'wincmd w'
-  echo "Opened " .. filename .. " in horizontal split"
-enddef
-
-def NetrwOpenTerminalImpl()
-  # Save current netrw window
-  var netrw_win = winnr()
-  
-  # Create horizontal split below current window
-  below split
-  
-  # Open terminal in the new split
-  terminal
-  
-  # Return focus to netrw
-  execute netrw_win .. 'wincmd w'
-  echo "Terminal opened below netrw"
-enddef
-
-def NetrwOpenTabImpl()
-  var filepath = GetNetrwFile()
-  var filename = fnamemodify(filepath, ':t')
-  
-  if filename == '' || filename == '.' || filename == '..'
-    echo "No valid file selected"
-    return
-  endif
-  
-  if isdirectory(filepath)
-    # For directories, use normal netrw navigation
-    normal! 
-    return
-  endif
-
-  if !filereadable(filepath)
-    echo "File not readable: " .. filepath
-    return
-  endif
-
-  execute 'tabnew ' .. fnameescape(filepath)
-  echo "Opened " .. filename .. " in new tab"
-enddef
+#def NetrwOpenTabImpl()
+#  var filepath = GetNetrwFile()
+#  var filename = fnamemodify(filepath, ':t')
+#  
+#  if filename == '' || filename == '.' || filename == '..'
+#    echo "No valid file selected"
+#    return
+#  endif
+#  
+#  if isdirectory(filepath)
+#    # For directories, use normal netrw navigation
+#    normal! 
+#    return
+#  endif
+#
+#  if !filereadable(filepath)
+#    echo "File not readable: " .. filepath
+#    return
+#  endif
+#
+#  execute 'tabnew ' .. fnameescape(filepath)
+#  echo "Opened " .. filename .. " in new tab"
+#enddef
 
 # Set up our enhanced mappings with <buffer> to make them buffer-local
-nnoremap <buffer><silent> f :call <SID>NetrwOpenVerticalSplit()<CR>
-nnoremap <buffer><silent> v :call <SID>NetrwOpenHorizontalSplit()<CR>
-nnoremap <buffer><silent> x :call <SID>NetrwOpenTerminal()<CR>
-nnoremap <buffer><silent> t :call <SID>NetrwOpenTab()<CR>
-
-# Override Enter to open file exclusively (close all other buffers)
-nnoremap <buffer><silent> <CR> :call <SID>NetrwOpenExclusive()<CR>
+# nnoremap <buffer><silent> f :call <SID>NetrwOpenVerticalSplit()<CR>
+# nnoremap <buffer><silent> v :call <SID>NetrwOpenHorizontalSplit()<CR>
+# nnoremap <buffer><silent> x :call <SID>NetrwOpenTerminal()<CR>
+# nnoremap <buffer><silent> t :call <SID>NetrwOpenTab()<CR>
 
 # Alternative mappings with leader key as backup
-nnoremap <buffer> <leader>f :call <SID>NetrwOpenVerticalSplit()<CR>
-nnoremap <buffer> <leader>v :call <SID>NetrwOpenHorizontalSplit()<CR>
-nnoremap <buffer> <leader>o :call <SID>NetrwOpenExclusive()<CR>
-nnoremap <buffer> <leader>x :call <SID>NetrwOpenTerminal()<CR>
-nnoremap <buffer> <leader>t :call <SID>NetrwOpenTab()<CR>
-
-echo "Netrw enhanced mappings set: f=vertical, v=horizontal, x=terminal, t=tab, Enter=exclusive"
-echo "Alternative mappings: <leader>f=vertical, <leader>v=horizontal, <leader>o=exclusive"
+# nnoremap <buffer> <leader>f :call <SID>NetrwOpenVerticalSplit()<CR>
+# nnoremap <buffer> <leader>v :call <SID>NetrwOpenHorizontalSplit()<CR>
+# nnoremap <buffer> <leader>x :call <SID>NetrwOpenTerminal()<CR>
+# nnoremap <buffer> <leader>t :call <SID>NetrwOpenTab()<CR>
 
 # Debug function
 function! s:NetrwDebugMappings()
@@ -241,6 +187,6 @@ endfunction
 
 # Commands for debugging
 command! NetrwMappings call <SID>NetrwDebugMappings()
-command! NetrwTestFile echo "File under cursor: " .. GetNetrwFile()
+# command! NetrwTestFile echo "File under cursor: " .. GetNetrwFile()
 
 echo "Netrw Vim9 enhanced mappings loaded successfully"
