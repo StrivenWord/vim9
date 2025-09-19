@@ -1,5 +1,8 @@
 vim9script
 
+# Adding utility directory for the 'fzf' command
+set rtp+=/opt/local/share/fzf/vim
+
 packadd minpac
 
 call minpac#init()
