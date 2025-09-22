@@ -17,7 +17,7 @@ g:tiddlywiki_watcher_script = expand('~/.vim/scripts/twatcher/tiddlywiki_watcher
 g:tiddlywiki_watcher_jobs = {}
 
 # Initialize wiki dictionary
-g:tiddlywiki_wikis: dict<any> = {}
+g:tiddlywiki_wikis = {}
 
 
 # --- Core Functions ---
