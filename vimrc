@@ -151,11 +151,12 @@ if !has('gui_running')
       &t_EI = "\<Esc>]50;CursorShape=0\x7"  # Block in normal mode
   endif
   # -- Alacritty and Kitty 
-  if &term =~ 'alacritty' || &term =~ 'xterm-kitty'
-      &t_SI = "\<Esc>[6 q"  # Vertical bar in insert mode
-      &t_SR = "\<Esc>[4 q"  # Underline in replace mode
-      &t_EI = "\<Esc>[2 q"  # Block in normal mode
-  endif
+  # (doesn't work, at least in Alacritty)
+  # if &term =~ 'alacritty' || &term =~ 'xterm-kitty'
+  #     &t_SI = "\<Esc>[6 q#  # Vertical bar in insert mode
+  #     &t_SR = "\<Esc>[4 q#  # Underline in replace mode
+  #     &t_EI = "\<Esc>[2 q#  # Block in normal mode
+  # endif
 endif
 
 
