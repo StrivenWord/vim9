@@ -144,16 +144,18 @@ g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 
 if !has('gui_running')
   # Terminal cursor shapes for different modes
-  # These work with Terminal.app and most modern terminals
-  var &t_SI = "\<Esc>]50;CursorShape=1\x7"  # Vertical bar in insert mode
-  var &t_SR = "\<Esc>]50;CursorShape=2\x7"  # Underline in replace mode  
-  var &t_EI = "\<Esc>]50;CursorShape=0\x7"  # Block in normal mode
-  
-  # Alternative approach using more standard escape sequences
-  # Uncomment these and comment the above if the first approach doesn't work
-  # let &t_SI = "\e[6 q"  # steady bar
-  # let &t_SR = "\e[4 q"  # steady underline
-  # let &t_EI = "\e[2 q"  # steady block
+  # -- iTerm2
+  if $TERM_PROGRAM == 'iTerm.app'
+      &t_SI = "\<Esc>]50;CursorShape=1\x7"  # Vertical bar in insert mode
+      &t_SR = "\<Esc>]50;CursorShape=2\x7"  # Underline in replace mode  
+      &t_EI = "\<Esc>]50;CursorShape=0\x7"  # Block in normal mode
+  endif
+  # -- Alacritty and Kitty 
+  if &term =~ 'alacritty' || &term =~ 'xterm-kitty'
+      &t_SI = "\<Esc>[6 q"  # Vertical bar in insert mode
+      &t_SR = "\<Esc>[4 q"  # Underline in replace mode
+      &t_EI = "\<Esc>[2 q"  # Block in normal mode
+  endif
 endif
 
 
