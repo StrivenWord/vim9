@@ -3,6 +3,8 @@ vim9script
 # Adding utility directory for the 'fzf' command
 set rtp+=/opt/local/share/fzf/vim
 
+try
+
 packadd minpac
 
 call minpac#init()
@@ -35,6 +37,7 @@ call minpac#add('groenewege/vim-less')
 call minpac#add('digitaltoad/vim-pug')
 call minpac#add('kchmck/vim-coffee-script')
 
+
 # ... shells ...
 call minpac#add('chrisbra/vim-zsh')
 # Nu needed
@@ -56,6 +59,11 @@ call minpac#add('vim-scripts/c.vim')
 
 # ... TiddlyWiki ...
 call minpac#add('sukima/vim-tiddlywiki')
+
+
+catch # If minpac is not available, skip all package loading.
+endtry
+
 
 # === colon commands ===
 
